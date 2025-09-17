@@ -1,3 +1,10 @@
+## Cerby Fork
+
+### Things that changed
+
+- Bundled https://github.com/nut-tree/node-mac-permissions here
+- Fixed MacOS 15 permissions in `node-mac-permissions` and in `src/macos`
+
 ## Building
 
 Please ensure you have the required dependencies before installing:
