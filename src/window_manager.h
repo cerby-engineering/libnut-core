@@ -7,9 +7,9 @@
 #include "types.h"
 
 /**
- * `getWindows` returns a list of 64bit window handles listing all top-level windows
+ * `getWindows` returns a list of window information including handles and PIDs for all top-level windows
  */
-std::vector<WindowHandle> getWindows();
+std::vector<MMWindowInfo> getWindows();
 /**
  * `getActiveWindow` returns the 64bit window handle of the currently active top-level window.
  * If no window is active, the return value is platform dependent.

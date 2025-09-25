@@ -29,6 +29,11 @@ export interface Rect {
   height: number;
 }
 
+export interface WindowInfo {
+  handle: number;
+  pid: number;
+}
+
 export function setKeyboardDelay(ms: number): void;
 export function keyTap(key: string, modifier?: string | string[]): void;
 export function keyToggle(
@@ -47,7 +52,7 @@ export function dragMouse(x: number, y: number): void;
 export function scrollMouse(x: number, y: number): void;
 export function getMousePos(): Point;
 export function getScreenSize(): Size;
-export function getWindows(): number[];
+export function getWindows(): WindowInfo[];
 export function getActiveWindow(): number;
 export function getWindowRect(handle: number): Rect;
 export function getWindowTitle(handle: number): string;

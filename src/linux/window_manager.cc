@@ -16,9 +16,31 @@ WindowHandle getActiveWindow() {
     return -1;
 }
 
-std::vector<WindowHandle> getWindows() {
+int32_t getWindowPID(Display* display, Window window) {
+    Atom actualType;
+    int actualFormat;
+    unsigned long numItems;
+    unsigned long bytesAfter;
+    unsigned char* propData = NULL;
+    int32_t pid = -1;
+
+    Atom pidAtom = XInternAtom(display, "_NET_WM_PID", True);
+    if (pidAtom != None) {
+        int result = XGetWindowProperty(display, window, pidAtom, 0, 1, False, XA_CARDINAL,
+                                      &actualType, &actualFormat, &numItems, &bytesAfter, &propData);
+        if (result == Success && propData != NULL && numItems > 0) {
+            pid = *((int32_t*)propData);
+        }
+        if (propData != NULL) {
+            XFree(propData);
+        }
+    }
+    return pid;
+}
+
+std::vector<MMWindowInfo> getWindows() {
     Display* xServer = XGetMainDisplay();
-    std::vector<WindowHandle> windowHandles;
+    std::vector<MMWindowInfo> windowInfos;
     if (xServer != NULL) {
         Window defaultRootWindow = DefaultRootWindow(xServer);
         Window rootWindow;
@@ -29,11 +51,13 @@ std::vector<WindowHandle> getWindows() {
         Status queryTreeResult = XQueryTree(xServer, defaultRootWindow, &rootWindow, &parentWindow, &windowList, &windowCount);
         if (queryTreeResult > 0) {
             for (size_t idx = 0; idx < windowCount; ++idx) {
-                windowHandles.push_back(windowList[idx]);
+                WindowHandle handle = windowList[idx];
+                int32_t pid = getWindowPID(xServer, handle);
+                windowInfos.push_back(MMWindowInfoMake(handle, pid));
             }
         }
     }
-    return windowHandles;
+    return windowInfos;
 }
 
 std::string getWindowTitle(const WindowHandle windowHandle) {

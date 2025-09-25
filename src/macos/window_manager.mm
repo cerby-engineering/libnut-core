@@ -93,13 +93,13 @@ WindowHandle getActiveWindow() {
     return -1;
 }
 
-std::vector<WindowHandle> getWindows() {
+std::vector<MMWindowInfo> getWindows() {
     CGWindowListOption listOptions =
             kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements;
     CFArrayRef windowList =
             CGWindowListCopyWindowInfo(listOptions, kCGNullWindowID);
 
-    std::vector<WindowHandle> windowHandles;
+    std::vector<MMWindowInfo> windowInfos;
 
     for (NSDictionary *info in (NSArray *) windowList) {
         NSNumber *ownerPid = info[(id) kCGWindowOwnerPID];
@@ -110,7 +110,9 @@ std::vector<WindowHandle> getWindows() {
         auto path = app ? [app.bundleURL.path UTF8String] : "";
 
         if (app && strcmp(path, "") != 0) {
-            windowHandles.push_back([windowNumber intValue]);
+            WindowHandle handle = [windowNumber intValue];
+            int32_t pid = [ownerPid intValue];
+            windowInfos.push_back(MMWindowInfoMake(handle, pid));
         }
     }
 
@@ -118,7 +120,7 @@ std::vector<WindowHandle> getWindows() {
         CFRelease(windowList);
     }
 
-    return windowHandles;
+    return windowInfos;
 }
 
 MMRect getWindowRect(const WindowHandle windowHandle) {
