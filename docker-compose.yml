@@ -1,0 +1,50 @@
+services:
+  libnut-build-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: libnut-linux-test
+    volumes:
+      # Mount source code for development (optional)
+      - .:/app
+      # Exclude node_modules to prevent conflicts
+      - /app/node_modules
+      - /app/test/node_modules
+    environment:
+      - DISPLAY=:99
+      - XVFB_WHD=1920x1080x24
+    command: ["xvfb-run-custom", "sh", "-c", "npm run build:release && cd test && npm install && npm test"]
+
+  # Service for interactive development
+  libnut-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: libnut-linux-dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/test/node_modules
+    environment:
+      - DISPLAY=:99
+      - XVFB_WHD=1920x1080x24
+    command: ["xvfb-run-custom", "bash"]
+    stdin_open: true
+    tty: true
+
+  # Service for building release and creating package
+  libnut-package:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    container_name: libnut-linux-package
+    volumes:
+      # Mount current directory to get the .tgz file out
+      - .:/app
+      # Mount a specific directory for output
+      - ./dist:/app/dist
+    environment:
+      - DISPLAY=:99
+      - XVFB_WHD=1920x1080x24
+    command: ["sh", "-c", "npm run build:release && npm pack && mkdir -p dist && mv *.tgz dist/ && echo 'Package created in ./dist/' && ls -la dist/"]

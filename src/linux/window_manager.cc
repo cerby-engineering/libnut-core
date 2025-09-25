@@ -1,5 +1,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <X11/Xatom.h>
 #include "../window_manager.h"
 extern "C" {
     #include "../xdisplay.h"
@@ -29,7 +30,9 @@ int32_t getWindowPID(Display* display, Window window) {
         int result = XGetWindowProperty(display, window, pidAtom, 0, 1, False, XA_CARDINAL,
                                       &actualType, &actualFormat, &numItems, &bytesAfter, &propData);
         if (result == Success && propData != NULL && numItems > 0) {
-            pid = *((int32_t*)propData);
+            if (actualFormat == 32) {
+                pid = static_cast<int32_t>(*((unsigned long*)propData));
+            }
         }
         if (propData != NULL) {
             XFree(propData);
@@ -54,6 +57,9 @@ std::vector<MMWindowInfo> getWindows() {
                 WindowHandle handle = windowList[idx];
                 int32_t pid = getWindowPID(xServer, handle);
                 windowInfos.push_back(MMWindowInfoMake(handle, pid));
+            }
+            if (windowList != NULL) {
+                XFree(windowList);
             }
         }
     }

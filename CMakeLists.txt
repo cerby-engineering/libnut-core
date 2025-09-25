@@ -76,6 +76,9 @@ endif()
 # --- Library Definition for libnut ---
 add_library(libnut SHARED ${LIBNUT_SOURCE_FILES} ${CMAKE_JS_SRC})
 
+
+add_definitions(-w)
+
 # --- Target-Specific Properties for libnut ---
 set_target_properties(libnut PROPERTIES PREFIX "" SUFFIX ".node")
 

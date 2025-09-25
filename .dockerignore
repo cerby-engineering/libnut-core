@@ -1,0 +1,47 @@
+# Ignore build artifacts
+build/
+Release/
+Debug/
+*.node
+
+# Ignore dependencies (will be installed in container)
+node_modules/
+test/node_modules/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore version control
+.git/
+.gitignore
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore logs
+*.log
+npm-debug.log*
+
+# Ignore temporary files
+*.tmp
+*.temp
+
+# Ignore MacOS specific files
+3rdparty/
+libnut-*.tgz
+
+# Don't ignore dist directory (for output)
+!dist/
+
+# Keep necessary files for building
+!package.json
+!package-lock.json
+!CMakeLists.txt
+!index.js
+!index.d.ts
+!src/
+!test/
