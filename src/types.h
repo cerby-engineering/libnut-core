@@ -69,4 +69,19 @@ H_INLINE MMRect MMRectMake(int64_t x, int64_t y, int64_t width, int64_t height)
 
 typedef int64_t WindowHandle;
 
+struct _MMWindowInfo {
+	WindowHandle handle;
+	int32_t pid;
+};
+
+typedef struct _MMWindowInfo MMWindowInfo;
+
+H_INLINE MMWindowInfo MMWindowInfoMake(WindowHandle handle, int32_t pid)
+{
+	MMWindowInfo info;
+	info.handle = handle;
+	info.pid = pid;
+	return info;
+}
+
 #endif /* TYPES_H */

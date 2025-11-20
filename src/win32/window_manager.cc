@@ -6,19 +6,22 @@
  * We should keep this in mind for the future, just in case there should be any deprecations or strange behaviour
  */
 BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lparam) {
-    std::vector<WindowHandle>* windowHandles = reinterpret_cast<std::vector<WindowHandle>*>(lparam);
-    if (windowHandles != nullptr) {
-        windowHandles->push_back(reinterpret_cast<WindowHandle>(hwnd));
+    std::vector<MMWindowInfo>* windowInfos = reinterpret_cast<std::vector<MMWindowInfo>*>(lparam);
+    if (windowInfos != nullptr) {
+        DWORD processId;
+        GetWindowThreadProcessId(hwnd, &processId);
+        WindowHandle handle = reinterpret_cast<WindowHandle>(hwnd);
+        windowInfos->push_back(MMWindowInfoMake(handle, static_cast<int32_t>(processId)));
     }
     return TRUE;
 }
 
-std::vector<WindowHandle> getWindows() {
-    std::vector<WindowHandle> windowHandles;
+std::vector<MMWindowInfo> getWindows() {
+    std::vector<MMWindowInfo> windowInfos;
 
-    EnumWindows (&EnumWindowsProc, reinterpret_cast<LPARAM>(&windowHandles));
+    EnumWindows (&EnumWindowsProc, reinterpret_cast<LPARAM>(&windowInfos));
 
-    return windowHandles;
+    return windowInfos;
 }
 
 WindowHandle getActiveWindow() {

@@ -1,9 +1,12 @@
 {
   "name": "libnut",
-  "version": "2.7.1",
+  "version": "3.0.0",
   "description": "libnut is an N-API module for desktop automation with node",
   "main": "index.js",
   "typings": "index.d.ts",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "scripts": {
     "clean": "cmake-js clean",
     "patch": "node ./patch-packagename.js",
@@ -40,9 +43,6 @@
   "devDependencies": {
     "cmake-js": "7.3.0",
     "node-addon-api": "7.1.0"
-  },
-  "optionalDependencies": {
-    "@nut-tree/node-mac-permissions": "2.2.1"
   },
   "engines": {
     "node": ">=10.15.3"

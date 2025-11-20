@@ -12,7 +12,8 @@ build/*.sln
 build/x64/
 build/libnut.dir/
 CMakeFiles
-src
+src/*
+!src/mac-permissions
 test
 .travis.yml
 CMakeLists.txt

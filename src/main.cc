@@ -677,11 +677,14 @@ Napi::Number _getActiveWindow(const Napi::CallbackInfo &info) {
 Napi::Array _getWindows(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
 
-    std::vector<WindowHandle> windowHandles = getWindows();
-    auto arr = Napi::Array::New(env, windowHandles.size());
+    std::vector<MMWindowInfo> windowInfos = getWindows();
+    auto arr = Napi::Array::New(env, windowInfos.size());
 
-    for (size_t idx = 0; idx < windowHandles.size(); ++idx) {
-        arr[(uint32_t) idx] = windowHandles[idx];
+    for (size_t idx = 0; idx < windowInfos.size(); ++idx) {
+        Napi::Object windowObj = Napi::Object::New(env);
+        windowObj.Set("handle", Napi::Number::New(env, (double) windowInfos[idx].handle));
+        windowObj.Set("pid", Napi::Number::New(env, windowInfos[idx].pid));
+        arr[(uint32_t) idx] = windowObj;
     }
 
     return arr;
